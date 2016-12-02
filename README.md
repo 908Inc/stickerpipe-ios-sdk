@@ -10,7 +10,7 @@ Add to your Podfile:
 pod 'DFImageManager', '~> 0.8.0'
 pod 'AFNetworking', '~> 3.1.0'
 pod 'SDWebImage', '~> 3.8.2'
-pod 'MBProgressHUD'
+pod 'MBProgressHUD', '~> 1.0.0'
 ```
 
 ## Credits
