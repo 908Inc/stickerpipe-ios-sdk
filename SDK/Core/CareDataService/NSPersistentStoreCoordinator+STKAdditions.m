@@ -42,13 +42,11 @@ static NSPersistentStoreCoordinator* defaultCoordinator;
 
 			// Adding the journalling mode recommended by apple
 			NSMutableDictionary* sqliteOptions = [NSMutableDictionary dictionary];
-			[sqliteOptions setObject: @"WAL" forKey: @"journal_mode"];
+			sqliteOptions[@"journal_mode"] = @"WAL";
 
-			NSDictionary* options = [NSDictionary dictionaryWithObjectsAndKeys:
-					[NSNumber numberWithBool: YES], NSMigratePersistentStoresAutomaticallyOption,
-					[NSNumber numberWithBool: YES], NSInferMappingModelAutomaticallyOption,
-					sqliteOptions, NSSQLitePragmasOption,
-							nil];
+			NSDictionary* options = @{NSMigratePersistentStoresAutomaticallyOption: @YES,
+					NSInferMappingModelAutomaticallyOption: @YES,
+					NSSQLitePragmasOption: sqliteOptions};
 
 			NSPersistentStore* store = [coordinator addPersistentStoreWithType: NSSQLiteStoreType configuration: nil URL: storeURL options: options error: &error];
 

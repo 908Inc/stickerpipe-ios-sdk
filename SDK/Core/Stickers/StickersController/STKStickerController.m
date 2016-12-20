@@ -221,10 +221,9 @@ static const CGFloat kKeyboardButtonHeight = 33.0;
 	[self.textInputView.superview addConstraints: @[right, top]];
 	[self.textInputView.superview layoutSubviews];
 
-	CGRect viewFrame = self.keyboardButton.frame;
-	viewFrame.size.height = CGFLOAT_MAX;
-	UIBezierPath* exclusivePath = [UIBezierPath bezierPathWithRect: viewFrame];
-	self.textInputView.textContainer.exclusionPaths = @[exclusivePath];
+	UIEdgeInsets insets = self.textInputView.textContainerInset;
+
+	self.textInputView.textContainerInset = UIEdgeInsetsMake(insets.top, insets.left, insets.bottom, kKeyboardButtonHeight * 0.75f);
 }
 
 - (void)initSuggestCollectionViewWithStickersArray: (NSArray*)stickers {

@@ -4,7 +4,6 @@
 //
 
 @import UIKit;
-
 @class MBProgressHUD;
 
 @interface UIView (ActivityIndicator)

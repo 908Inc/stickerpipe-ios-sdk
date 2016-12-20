@@ -10,7 +10,6 @@
 #import "STKStickerViewCell.h"
 #import "UIImage+Tint.h"
 #import "STKUtility.h"
-#import "DFImageManagerKit.h"
 #import "UIImageView+WebCache.h"
 #import "STKWebserviceManager.h"
 #import "UIView+CordsAdditions.h"

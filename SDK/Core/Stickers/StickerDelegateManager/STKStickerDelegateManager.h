@@ -8,8 +8,8 @@
 
 @import UIKit;
 
-#import "helper.h"
 #import "STKSticker+CoreDataProperties.h"
+#import "helper.h"
 
 @class STKStickersEntityService;
 

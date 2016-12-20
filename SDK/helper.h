@@ -6,8 +6,6 @@
 //  Copyright © 2016 908 Inc. All rights reserved.
 //
 
-@import Foundation;
-
 #ifndef helper_h
 #define helper_h
 
