@@ -6,7 +6,9 @@
 //  Copyright (c) 2015 908 Inc. All rights reserved.
 //
 
+@import UIKit;
 
+#import "helper.h"
 #import "STKSticker+CoreDataProperties.h"
 
 @class STKStickersEntityService;

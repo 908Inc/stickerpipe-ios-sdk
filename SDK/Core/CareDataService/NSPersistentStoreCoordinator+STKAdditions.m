@@ -7,6 +7,7 @@
 //
 
 #import "NSPersistentStoreCoordinator+STKAdditions.h"
+#import "helper.h"
 
 static NSPersistentStoreCoordinator* defaultCoordinator;
 

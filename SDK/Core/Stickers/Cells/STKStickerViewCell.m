@@ -17,6 +17,7 @@
 #import "UIView+LayoutAdditions.h"
 #import "NSLayoutConstraint+Addictions.h"
 #import "UIImage+CustomBundle.h"
+#import "helper.h"
 
 @interface STKStickerViewCell ()
 

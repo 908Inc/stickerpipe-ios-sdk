@@ -8,6 +8,7 @@
 
 #import <CommonCrypto/CommonDigest.h>
 #import "STKUtility.h"
+#import "helper.h"
 
 @implementation STKUtility
 

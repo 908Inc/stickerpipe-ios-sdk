@@ -5,6 +5,7 @@
 
 #import "STKShowStickerButton.h"
 #import "UIImage+CustomBundle.h"
+#import "helper.h"
 
 @implementation STKShowStickerButton
 

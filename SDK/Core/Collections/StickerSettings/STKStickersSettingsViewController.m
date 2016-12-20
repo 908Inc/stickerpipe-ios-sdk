@@ -20,6 +20,7 @@
 #import "STKUtility.h"
 #import "STKStickersCache.h"
 #import "UIView+CordsAdditions.h"
+#import "helper.h"
 
 @interface STKStickersSettingsViewController () <UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate>
 

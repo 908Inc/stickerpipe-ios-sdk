@@ -8,6 +8,7 @@
 
 #import "STKEmptyRecentCell.h"
 #import "UIImage+CustomBundle.h"
+#import "helper.h"
 
 @interface STKEmptyRecentCell ()
 

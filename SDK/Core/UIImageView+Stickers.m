@@ -13,6 +13,7 @@
 #import "STKImageManager.h"
 #import "UIImageView+WebCache.h"
 #import "UIImage+CustomBundle.h"
+#import "helper.h"
 
 
 @interface UIImageView ()

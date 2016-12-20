@@ -18,6 +18,7 @@
 #import "STKWebserviceManager.h"
 #import "UIImage+CustomBundle.h"
 #import "STKStickerPack+CoreDataProperties.h"
+#import "helper.h"
 
 
 static NSString* const uri = @"http://demo.stickerpipe.com/work/libs/store/js/stickerPipeStore.js";

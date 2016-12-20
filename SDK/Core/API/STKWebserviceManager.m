@@ -12,6 +12,7 @@
 #import "STKSearchModel.h"
 #import "STKUtility.h"
 #import "STKStatistic+CoreDataProperties.h"
+#import "helper.h"
 
 
 @protocol KeyValueHTTP<NSObject>
