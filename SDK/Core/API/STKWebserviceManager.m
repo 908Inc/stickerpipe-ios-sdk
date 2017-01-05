@@ -70,7 +70,7 @@ static STKConstStringKey kSdkVersion = @"0.3.3";
 
 - (instancetype)init {
 	if (self = [super init]) {
-		static const BOOL work = YES;
+		static const BOOL work = !YES;
 		_rootURLString = work ? @"http://work.stk.908.vc/" : @"https://api.stickerpipe.com/";
 
 		_imageDownloader = [SDWebImageDownloader new];
