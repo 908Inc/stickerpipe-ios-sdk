@@ -80,7 +80,7 @@
 
 - (void)configWithStickerPack: (STKStickerPack*)stickerPack placeholder: (UIImage*)placeholder placeholderTintColor: (UIColor*)placeholderTintColor {
 	self.packName = stickerPack.packName;
-	self.dotView.hidden = !stickerPack.isNew.boolValue;
+	self.dotView.hidden = YES;
 
 	UIImage* resultPlaceholder = nil;
 	if (FRAMEWORK) {
@@ -122,20 +122,6 @@
 	}];
 
 	[self.imageTask resume];
-}
-
-- (void)configureSettingsCell {
-    if (FRAMEWORK) {
-        self.originalImage = [UIImage imageNamedInCustomBundle:@"STKSettingsSelectedIcon"];
-        self.grayImage = [UIImage imageNamedInCustomBundle:@"STKSettingsIcon"];
-    } else {
-        self.originalImage = [UIImage imageNamed: @"STKSettingsSelectedIcon"];
-        self.grayImage = [UIImage imageNamed: @"STKSettingsIcon"];
-    }
-    
-    self.imageView.image = self.grayImage;
-    self.imageView.tintColor = [UIColor grayColor];
-    self.dotView.hidden = YES;
 }
 
 @end

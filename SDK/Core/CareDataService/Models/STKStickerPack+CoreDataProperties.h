@@ -19,7 +19,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, copy) NSDate *updatedDate;
 @property (nullable, nonatomic, copy) NSString *bannerUrl;
 @property (nullable, nonatomic, copy) NSNumber *disabled;
-@property (nullable, nonatomic, copy) NSNumber *isNew;
 @property (nullable, nonatomic, copy) NSNumber *order;
 @property (nullable, nonatomic, copy) NSString *packDescription;
 @property (nullable, nonatomic, copy) NSNumber *packID;

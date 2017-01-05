@@ -22,7 +22,6 @@
 
 - (BOOL)isPackDownloaded: (NSString*)packName;
 - (BOOL)hasRecentStickers;
-- (BOOL)hasNewPacks;
 - (BOOL)hasPackWithName: (NSString*)packName;
 
 - (NSUInteger)indexOfPackWithName: (NSString*)packName;

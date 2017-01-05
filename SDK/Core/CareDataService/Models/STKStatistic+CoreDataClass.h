@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 extern const struct STKStatisticAttributes {
     __unsafe_unretained NSString* action;
     __unsafe_unretained NSString* category;
@@ -16,8 +18,6 @@ extern const struct STKStatisticAttributes {
     __unsafe_unretained NSString* time;
     __unsafe_unretained NSString* value;
 } STKStatisticAttributes;
-
-NS_ASSUME_NONNULL_BEGIN
 
 @interface STKStatistic : NSManagedObject
 

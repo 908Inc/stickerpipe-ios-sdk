@@ -17,7 +17,6 @@
 @dynamic artist;
 @dynamic bannerUrl;
 @dynamic disabled;
-@dynamic isNew;
 @dynamic order;
 @dynamic packDescription;
 @dynamic packID;
@@ -27,5 +26,6 @@
 @dynamic pricePoint;
 @dynamic productID;
 @dynamic stickers;
+@dynamic updatedDate;
 
 @end

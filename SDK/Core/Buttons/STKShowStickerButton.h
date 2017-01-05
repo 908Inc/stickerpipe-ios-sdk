@@ -12,6 +12,7 @@ typedef NS_ENUM(ushort, STKShowStickerButtonState)
 };
 
 @interface STKShowStickerButton : UIButton
+//TODO:can be removed
 @property (nonatomic) STKBadgeView* badgeView;
 @property (nonatomic) IBInspectable UIColor* badgeBorderColor;
 

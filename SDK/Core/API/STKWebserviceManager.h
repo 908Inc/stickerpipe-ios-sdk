@@ -26,8 +26,8 @@
 						success: (void (^)(id))success
 						failure: (void (^)(NSError*))failure;
 
-- (void)getStickersPacksForUserWithSuccess: (void (^)(id response, NSTimeInterval lastModifiedDate))success
-								   failure: (void (^)(NSError* error))failure;
+- (void)getPacksWithSuccess: (void (^)(id response, NSTimeInterval lastModifiedDate, BOOL newContent))success
+					failure: (void (^)(NSError* error))failure;
 
 - (void)sendStatistics: (NSArray*)statisticsArray
 			   success: (void (^)(id response))success
@@ -61,8 +61,6 @@
 //TODO:rename it
 - (NSString*)stickerUrl;
 
-- (NSURL*)imageUrlForStickerMessage: (NSString*)stickerMessage andDensity: (NSString*)density;
-- (NSURL*)imageUrlForStickerPanelWithMessage: (NSString*)stickerMessage;
 - (NSURL*)tabImageUrlForPackName: (NSString*)name;
 - (NSURL*)mainImageUrlForPackName: (NSString*)name;
 @end

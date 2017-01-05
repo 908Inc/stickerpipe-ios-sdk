@@ -22,13 +22,11 @@
 
 @implementation STKStickersEntityService
 
-static const NSUInteger kFirstNewStickers = 3;
 static const NSTimeInterval kUpdatesDelay = 900.0; //15 min
 
 - (instancetype)init {
 	if (self = [super init]) {
 		self.cacheEntity = [STKStickersCache new];
-		self.hasNewModifiedPacks = [[STKWebserviceManager sharedInstance] lastModifiedDate] == 0;
 	}
 
 	return self;
@@ -116,22 +114,20 @@ static const NSTimeInterval kUpdatesDelay = 900.0; //15 min
 }
 
 - (void)updateStickerPacksFromServerWithCompletion: (void (^)(NSError* error))completion {
-	[[STKWebserviceManager sharedInstance] getStickersPacksForUserWithSuccess: ^ (id response, NSTimeInterval lastModifiedDate) {
+	[[STKWebserviceManager sharedInstance] getPacksWithSuccess: ^ (id response, NSTimeInterval lastModifiedDate, BOOL newContent) {
 		NSArray* serializedObjects = [STKStickerPack serializeStickerPacks: response[@"data"]];
 		[self loadStickersForPacks: serializedObjects completion: ^ (NSArray<STKStickerPack*>* array) {
 			NSError* error = [self.cacheEntity saveStickerPacks: serializedObjects];
-			if (lastModifiedDate > [[STKWebserviceManager sharedInstance] lastModifiedDate]) {
-				self.hasNewModifiedPacks = YES;
-				[[STKWebserviceManager sharedInstance] setLastModifiedDate: lastModifiedDate];
-			} else {
-				self.hasNewModifiedPacks = NO;
+			self.hasNewModifiedPacks = newContent;
+			if (lastModifiedDate > [STKWebserviceManager sharedInstance].lastModifiedDate) {
+				[STKWebserviceManager sharedInstance].lastModifiedDate = lastModifiedDate;
 			}
-			[[STKWebserviceManager sharedInstance] setLastUpdateDate: [[NSDate date] timeIntervalSince1970]];
+			[STKWebserviceManager sharedInstance].lastUpdateDate = [NSDate date].timeIntervalSince1970;
 			if (completion) {
 				completion(error);
 			}
 		}];
-	}                                                                 failure: ^ (NSError* error) {
+	}                                                  failure: ^ (NSError* error) {
 		if (error.code == -1009) {
 			completion(error);
 		} else {
@@ -154,19 +150,6 @@ static const NSTimeInterval kUpdatesDelay = 900.0; //15 min
 
 - (NSString*)packNameForStickerId: (NSString*)stickerId {
 	return [self.cacheEntity packNameForStickerId: stickerId];
-}
-
-- (BOOL)hasNewPacks {
-	NSArray* arr = [self.cacheEntity getAllEnabledPacks];
-	NSUInteger newsCount = 0;
-	NSUInteger size = (arr.count < kFirstNewStickers + 1) ? arr.count : kFirstNewStickers + 1;
-	for (NSUInteger i = 0; i < size; i++) {
-		STKStickerPack* stickerPack = arr[i];
-		if (stickerPack.isNew.boolValue) {
-			newsCount++;
-		}
-	}
-	return ![self hasRecentStickers] || newsCount > 0;
 }
 
 - (BOOL)isPackDownloaded: (NSString*)packName {

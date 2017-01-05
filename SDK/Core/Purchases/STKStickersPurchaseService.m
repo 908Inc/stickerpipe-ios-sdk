@@ -54,7 +54,7 @@
 
 - (void)purchaseProductWithPackName: (NSString*)packName
 					   andPackPrice: (NSString*)packPrice {
-	typeof(self) __weak weakSelf = self;
+	//typeof(self) __weak weakSelf = self;
 
 	/*[[RMStore defaultStore] addPayment: [STKInAppProductsManager productIdWithPackPrice: packPrice] success: ^ (SKPaymentTransaction* transaction) {
 		NSLog(@"purchase complete");

@@ -21,5 +21,7 @@
 @dynamic usedCount;
 @dynamic usedDate;
 @dynamic stickerPack;
+@dynamic order;
+@dynamic stickerURL;
 
 @end

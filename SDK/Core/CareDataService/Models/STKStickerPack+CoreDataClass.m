@@ -8,9 +8,9 @@
 
 #import "STKStickerPack+CoreDataClass.h"
 #import "STKSticker+CoreDataProperties.h"
-#import "STKUtility.h"
 #import "NSManagedObject+STKAdditions.h"
 #import "NSManagedObjectContext+STKAdditions.h"
+#import "STKUtility.h"
 
 @implementation STKStickerPack
 
@@ -52,12 +52,6 @@
 	self.price = dict[@"price"];
 	self.packDescription = dict[@"description"];
 	self.productID = dict[@"product_id"];
-
-
-//TODO:  -temp
-	if (!self.isNew) {
-		self.isNew = @YES;
-	}
 
 	[dict[@"stickers"] enumerateObjectsUsingBlock: ^ (NSDictionary* dictionary, NSUInteger idx, BOOL* stop) {
 		STKSticker* sticker = [STKSticker stickerWithDictionary: dictionary];

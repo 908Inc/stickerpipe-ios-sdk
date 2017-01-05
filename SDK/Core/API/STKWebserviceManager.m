@@ -70,7 +70,7 @@ static STKConstStringKey kSdkVersion = @"0.3.3";
 
 - (instancetype)init {
 	if (self = [super init]) {
-		static const BOOL work = !YES;
+		static const BOOL work = YES;
 		_rootURLString = work ? @"http://work.stk.908.vc/" : @"https://api.stickerpipe.com/";
 
 		_imageDownloader = [SDWebImageDownloader new];
@@ -160,7 +160,7 @@ static STKConstStringKey kSdkVersion = @"0.3.3";
 			@"limit" : searchModel.limit
 	};
 
-    [[STKWebserviceManager sharedInstance].getSessionManager GET: kSearchURL parameters: params progress: nil success: ^ (NSURLSessionDataTask* task, id responseObject) {
+    [self.getSessionManager GET: kSearchURL parameters: params progress: nil success: ^ (NSURLSessionDataTask* task, id responseObject) {
 		if (completion) {
 			completion(responseObject[@"data"]);
 		}
@@ -181,7 +181,7 @@ static STKConstStringKey kSdkVersion = @"0.3.3";
 	NSString* route = [NSString stringWithFormat: @"packs/%@", packName];
 	NSDictionary* params = @{@"purchase_type" : [self purchaseType: pricePoint]};
 
-	[[STKWebserviceManager sharedInstance].stickerSessionManager POST: route parameters: params progress: nil success: ^ (NSURLSessionDataTask* task, id responseObject) {
+	[self.stickerSessionManager POST: route parameters: params progress: nil success: ^ (NSURLSessionDataTask* task, id responseObject) {
 		if (success) {
 			success(responseObject);
 		}
@@ -194,25 +194,26 @@ static STKConstStringKey kSdkVersion = @"0.3.3";
 	}];
 }
 
-- (void)getStickersPacksForUserWithSuccess: (void (^)(id response, NSTimeInterval lastModifiedDate))success
-								   failure: (void (^)(NSError* error))failure {
+- (void)getPacksWithSuccess: (void (^)(id response, NSTimeInterval lastModifiedDate, BOOL newContent))success
+					failure: (void (^)(NSError* error))failure {
 	NSString* funcName = @"getStickersPacksForUserWithSuccess";
 
-	NSDictionary* params = @{@"is_subscriber" : @([STKStickersManager isSubscriber])};
+	NSDictionary* params = @{@"is_subscriber": @([STKStickersManager isSubscriber])};
 
-	[[STKWebserviceManager sharedInstance].getSessionManager GET: kPacksURL parameters: params progress: nil success: ^ (NSURLSessionDataTask* task, id responseObject) {
-		NSTimeInterval timeInterval = 0;
+	[self.getSessionManager GET: kPacksURL parameters: params progress: nil success: ^ (NSURLSessionDataTask* task, id responseObject) {
+		//TODO: check, if this needed
+		NSTimeInterval timeInterval = [responseObject[@"meta"][@"shop_last_modified"] doubleValue];
 
-		timeInterval = [responseObject[@"meta"][@"shop_last_modified"] doubleValue];
+		BOOL newContent = [responseObject[@"meta"][@"new_shop_content"] boolValue];
 
 		if ([responseObject[@"data"] count] == 0) {
 			STKLog(@"get empty stickers pack JSON");
 		}
 
 		if (success) {
-			success(responseObject, timeInterval);
+			success(responseObject, timeInterval, newContent);
 		}
-	}                   failure: ^ (NSURLSessionDataTask* task, NSError* error) {
+	}                                                    failure: ^ (NSURLSessionDataTask* task, NSError* error) {
 		[self sendAnErrorWithCategory: funcName p1: @"" p2: @""];
 
 		if (failure) {
@@ -274,43 +275,6 @@ static STKConstStringKey kSdkVersion = @"0.3.3";
 
 		if (failure) {
 			failure(error);
-		}
-	}];
-}
-
-- (void)getStickersPackWithType: (NSString*)type
-						success: (void (^)(id response, NSTimeInterval lastModifiedDate))success
-						failure: (void (^)(NSError* error))failure {
-	NSString* funcName = @"getStickersPackWithType";
-
-
-	NSDictionary* params = nil;
-	if (type) {
-		params = @{@"type" : type};
-	}
-
-	[self.backgroundSessionManager GET: kPacksURL parameters: params progress: nil success: ^ (NSURLSessionDataTask* task, id responseObject) {
-		NSHTTPURLResponse* response = ((NSHTTPURLResponse*) [task response]);
-		NSTimeInterval timeInterval = 0;
-		if ([response respondsToSelector: @selector(allHeaderFields)]) {
-			NSDictionary* headers = [response allHeaderFields];
-			timeInterval = [headers[@"Last-Modified"] doubleValue];
-		}
-
-		if ([responseObject[@"data"] count] == 0) {
-			STKLog(@"get empty stickers pack JSON");
-		}
-
-		if (success) {
-			success(responseObject, timeInterval);
-		}
-	}                          failure: ^ (NSURLSessionDataTask* task, NSError* error) {
-		[self sendAnErrorWithCategory: funcName p1: @"" p2: @""];
-
-		if (failure) {
-			dispatch_async(dispatch_get_main_queue(), ^ {
-				failure(error);
-			});
 		}
 	}];
 }
@@ -450,16 +414,6 @@ static STKConstStringKey kSdkVersion = @"0.3.3";
 	return [NSURL URLWithString: [NSString stringWithFormat: @"%@stk/", self.rootURLString]];
 }
 
-- (NSURL*)imageUrlForStickerMessage: (NSString*)stickerMessage andDensity: (NSString*)density {
-	NSArray* separatedStickerNames = [STKUtility trimmedPackNameAndStickerNameWithMessage: stickerMessage];
-	NSString* packName = [[separatedStickerNames firstObject] lowercaseString];
-	NSString* stickerName = [[separatedStickerNames lastObject] lowercaseString];
-
-	NSString* urlString = [NSString stringWithFormat: @"%@/%@_%@.png", packName, stickerName, density];
-
-	return [NSURL URLWithString: urlString relativeToURL: [self stkUrl]];
-}
-
 - (NSURL*)tabImageUrlForPackName: (NSString*)name {
 	NSString* density = [STKUtility scaleString];
 
@@ -476,16 +430,7 @@ static STKConstStringKey kSdkVersion = @"0.3.3";
 	return [NSURL URLWithString: urlString relativeToURL: [self stkUrl]];
 }
 
-- (NSURL*)imageUrlForStickerPanelWithMessage: (NSString*)stickerMessage {
-	NSArray* separatedStickerNames = [STKUtility trimmedPackNameAndStickerNameWithMessage: stickerMessage];
-	NSString* packName = [[separatedStickerNames firstObject] lowercaseString];
-	NSString* stickerName = [[separatedStickerNames lastObject] lowercaseString];
-	NSString* urlString = [NSString stringWithFormat: @"%@/%@_mdpi.png", packName, stickerName];
-
-	return [NSURL URLWithString: urlString relativeToURL: [self stkUrl]];
-}
-
-
+//TODO: move it somewhere
 #pragma mark - defaults
 
 - (NSTimeInterval)lastUpdateDate {
