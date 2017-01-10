@@ -606,11 +606,11 @@ void *modifiedPacksContext = &modifiedPacksContext;
 #pragma mark - statistics
 
 - (void)textMessageSendStatistic {
-	[[STKAnalyticService sharedService] sendEventWithCategory: STKAnalyticMessageCategory action: STKAnalyticActionTabs label: STKMessageTextLabel value: nil];
+	[[STKAnalyticService sharedService] sendEventWithCategory: STKAnalyticMessageCategory action: STKAnalyticActionSend label: STKMessageTextLabel value: nil];
 }
 
 - (void)stickerMessageSendStatistic {
-	[[STKAnalyticService sharedService] sendEventWithCategory: STKAnalyticMessageCategory action: STKAnalyticActionTabs label: STKMessageStickerLabel value: nil];
+	[[STKAnalyticService sharedService] sendEventWithCategory: STKAnalyticMessageCategory action: STKAnalyticActionSend label: STKMessageStickerLabel value: nil];
 }
 
 

@@ -14,6 +14,7 @@ extern NSString* const STKAnalyticStickerCategory;
 
 //Actions
 extern NSString* const STKAnalyticActionTabs;
+extern NSString* const STKAnalyticActionSend;
 extern NSString* const STKAnalyticActionRecent;
 extern NSString* const STKAnalyticActionSuggest;
 

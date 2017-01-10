@@ -18,6 +18,7 @@ NSString* const STKAnalyticStickerCategory = @"sticker";
 
 //Actions
 NSString* const STKAnalyticActionTabs = @"tab";
+NSString* const STKAnalyticActionSend = @"send";
 NSString* const STKAnalyticActionRecent = @"recent";
 NSString* const STKAnalyticActionSuggest = @"suggest";
 
@@ -86,9 +87,9 @@ static const NSInteger kMemoryCacheObjectsCount = 20;
 		STKStatistic* statistic = [NSEntityDescription insertNewObjectForEntityForName: NSStringFromClass([STKStatistic class]) inManagedObjectContext: weakSelf.backgroundContext];
 		statistic.value = value;
 		statistic.category = category;
-		statistic.time = [NSNumber numberWithLongLong: ((NSInteger) [[NSDate date] timeIntervalSince1970])];
-			statistic.label = label;
-			statistic.action = action;
+		statistic.time = @((NSInteger) [NSDate date].timeIntervalSince1970);
+		statistic.label = label;
+		statistic.action = action;
 
 		NSError* error = nil;
 		weakSelf.objectCounter++;
