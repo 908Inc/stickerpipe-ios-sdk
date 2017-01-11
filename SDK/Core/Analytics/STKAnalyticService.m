@@ -11,6 +11,7 @@
 #import "NSManagedObject+STKAdditions.h"
 #import "STKWebserviceManager.h"
 #import "STKStatistic+CoreDataProperties.h"
+#import "STKUtility.h"
 
 //Categories
 NSString* const STKAnalyticMessageCategory = @"message";
@@ -26,17 +27,14 @@ NSString* const STKAnalyticActionSuggest = @"suggest";
 NSString* const STKMessageTextLabel = @"text";
 NSString* const STKMessageStickerLabel = @"sticker";
 
-//Used with weak
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-variable"
 static const NSInteger kMemoryCacheObjectsCount = 20;
-#pragma clang diagnostic pop
 
 
 @interface STKAnalyticService ()
 
 @property (nonatomic) NSInteger objectCounter;
 @property (nonatomic) NSManagedObjectContext* backgroundContext;
+@property (nonatomic) BOOL isSendingStatistic;
 
 @end
 
@@ -53,7 +51,6 @@ static const NSInteger kMemoryCacheObjectsCount = 20;
 	return service;
 }
 
-
 - (instancetype)init {
 	if (self = [super init]) {
 		[[NSNotificationCenter defaultCenter] addObserver: self
@@ -65,6 +62,8 @@ static const NSInteger kMemoryCacheObjectsCount = 20;
 												 selector: @selector(applicationWillTerminateNotification:)
 													 name: UIApplicationWillTerminateNotification
 												   object: nil];
+
+		_backgroundContext = [NSManagedObjectContext stk_backgroundContext];
 	}
 
 	return self;
@@ -115,38 +114,39 @@ static const NSInteger kMemoryCacheObjectsCount = 20;
 #pragma mark - Sending
 
 - (void)sendEventsFromDatabase {
-	typeof(self) __weak weakSelf = self;
+	if (self.isSendingStatistic) {
+		return;
+	}
 
 	if (self.backgroundContext.hasChanges) {
 		[self.backgroundContext performBlockAndWait: ^ {
 			NSError* error = nil;
-			[weakSelf.backgroundContext save: &error];
+			[self.backgroundContext save: &error];
 		}];
 	}
 
 	NSArray* events = [STKStatistic stk_findAllInContext: self.backgroundContext];
 
+	if (events.count == 0) {
+		return;
+	}
+
+	self.isSendingStatistic = YES;
+
 	//API - send statistics
 	[[STKWebserviceManager sharedInstance] sendStatistics: events success: ^ (id response) {
-		[weakSelf.backgroundContext performBlock: ^ {
+		[self.backgroundContext performBlock: ^ {
 			for (id object in events) {
-				[weakSelf.backgroundContext deleteObject: object];
+				[self.backgroundContext deleteObject: object];
 			}
-			[weakSelf.backgroundContext save: nil];
+			[self.backgroundContext save: nil];
+
+			self.isSendingStatistic = NO;
 		}];
 	}                                             failure: ^ (NSError* error) {
-		NSLog(@"Failed to send events");
+		self.isSendingStatistic = NO;
+		STKLog(@"Failed to send events");
 	}];
-}
-
-
-#pragma mark - Properties
-
-- (NSManagedObjectContext*)backgroundContext {
-	if (!_backgroundContext) {
-		_backgroundContext = [NSManagedObjectContext stk_backgroundContext];
-	}
-	return _backgroundContext;
 }
 
 

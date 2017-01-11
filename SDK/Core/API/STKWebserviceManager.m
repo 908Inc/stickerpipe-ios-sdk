@@ -233,19 +233,17 @@ static STKConstStringKey kSdkVersion = @"0.3.3";
 		[array addObject: [statistic dictionary]];
 	}
 
-	if (array.count > 0) {
-		[self.analyticSessionManager POST: kStatisticUrl parameters: array progress: nil success: ^ (NSURLSessionDataTask* task, id responseObject) {
-			if (success) {
-				success(responseObject);
-			}
-		}                         failure: ^ (NSURLSessionDataTask* task, NSError* error) {
-			[self sendAnErrorWithCategory: funcName p1: @"" p2: @""];
+	[self.analyticSessionManager POST: kStatisticUrl parameters: array progress: nil success: ^ (NSURLSessionDataTask* task, id responseObject) {
+		if (success) {
+			success(responseObject);
+		}
+	}                         failure: ^ (NSURLSessionDataTask* task, NSError* error) {
+		[self sendAnErrorWithCategory: funcName p1: @"" p2: @""];
 
-			if (failure) {
-				failure(error);
-			}
-		}];
-	}
+		if (failure) {
+			failure(error);
+		}
+	}];
 }
 
 - (NSString*)purchaseType: (NSString*)pricePoint {
