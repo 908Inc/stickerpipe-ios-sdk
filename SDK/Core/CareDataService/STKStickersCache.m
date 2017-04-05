@@ -13,6 +13,7 @@
 #import "STKStickerPack+CoreDataProperties.h"
 #import "STKSticker+CoreDataProperties.h"
 #import "STKUtility.h"
+#import "STKWebserviceManager.h"
 
 NSString* const kSTKPackDisabledNotification = @"kSTKPackDisabledNotification";
 
@@ -41,14 +42,12 @@ NSString* const kSTKPackDisabledNotification = @"kSTKPackDisabledNotification";
 
 #pragma mark - Saving
 
-- (NSError*)saveStickerPacks: (NSArray*)stickerPacks {
-	__block NSError* error;
-	[self.mainContext performBlockAndWait: ^ {
-		[self removeAbsentPacksWithCurrentPacks: stickerPacks];
+- (void)saveStickerPacks: (NSArray*)stickerPacks error: (NSError**)error {
+	[self removeAbsentPacksWithCurrentPacks: stickerPacks];
 
-		[self.mainContext save: &error];
-	}];
-	return error;
+	if (self.mainContext.hasChanges) {
+		[self.mainContext save: error];
+	}
 }
 
 - (void)removeAbsentPacksWithCurrentPacks: (NSArray<STKStickerPack*>*)stickerPacks {
@@ -57,7 +56,12 @@ NSString* const kSTKPackDisabledNotification = @"kSTKPackDisabledNotification";
 	NSFetchRequest* requestForDelete = [STKStickerPack fetchRequest];
 	requestForDelete.predicate = [NSPredicate predicateWithFormat: @"NOT (packID in %@)", packIDs];
 
-	NSArray* objectsForDelete = [self.mainContext executeFetchRequest: requestForDelete error: nil];
+	NSError *error = nil;
+	NSArray* objectsForDelete = [self.mainContext executeFetchRequest: requestForDelete error: &error];
+
+	if (error) {
+		[[STKWebserviceManager sharedInstance] sendAnErrorWithCategory: @"CoreDataError" p1: error.description p2: [NSString stringWithFormat: @"%i", error.code]];
+	}
 
 	for (STKStickerPack* pack in objectsForDelete) {
 		[self.mainContext deleteObject: pack];

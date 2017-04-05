@@ -117,14 +117,15 @@ static const NSTimeInterval kUpdatesDelay = 900.0; //15 min
 	[[STKWebserviceManager sharedInstance] getPacksWithSuccess: ^ (id response, NSTimeInterval lastModifiedDate, BOOL newContent) {
 		NSArray* serializedObjects = [STKStickerPack serializeStickerPacks: response[@"data"]];
 		[self loadStickersForPacks: serializedObjects completion: ^ (NSArray<STKStickerPack*>* array) {
-			NSError* error = [self.cacheEntity saveStickerPacks: serializedObjects];
+			NSError* savingError = nil;
+			[self.cacheEntity saveStickerPacks: serializedObjects error: &savingError];
 			self.hasNewModifiedPacks = newContent;
 			if (lastModifiedDate > [STKWebserviceManager sharedInstance].lastModifiedDate) {
 				[STKWebserviceManager sharedInstance].lastModifiedDate = lastModifiedDate;
 			}
 			[STKWebserviceManager sharedInstance].lastUpdateDate = [NSDate date].timeIntervalSince1970;
 			if (completion) {
-				completion(error);
+				completion(savingError);
 			}
 		}];
 	}                                                  failure: ^ (NSError* error) {

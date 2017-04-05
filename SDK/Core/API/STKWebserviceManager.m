@@ -15,14 +15,14 @@
 #import "helper.h"
 
 
-@protocol KeyValueHTTP<NSObject>
-- (void)setValue:(NSString *)value forHTTPHeaderField:(NSString *)field;
+@protocol KeyValueHTTP <NSObject>
+- (void)setValue: (NSString*)value forHTTPHeaderField: (NSString*)field;
 @end
 
-@interface AFJSONRequestSerializer(KeyValueHTTP) <KeyValueHTTP>
+@interface AFJSONRequestSerializer (KeyValueHTTP) <KeyValueHTTP>
 @end
 
-@interface SDWebImageDownloader(KeyValueHTTP) <KeyValueHTTP>
+@interface SDWebImageDownloader (KeyValueHTTP) <KeyValueHTTP>
 @end
 
 @interface STKWebserviceManager ()
@@ -154,13 +154,13 @@ static STKConstStringKey kSdkVersion = @"0.3.3";
 	searchModel.limit = @"20";
 
 	NSDictionary* params = @{
-			@"q" : searchModel.q,
-			@"top_if_empty" : searchModel.topIfEmpty,
-			@"whole_word" : searchModel.wholeWord,
-			@"limit" : searchModel.limit
+			@"q": searchModel.q,
+			@"top_if_empty": searchModel.topIfEmpty,
+			@"whole_word": searchModel.wholeWord,
+			@"limit": searchModel.limit
 	};
 
-    [self.getSessionManager GET: kSearchURL parameters: params progress: nil success: ^ (NSURLSessionDataTask* task, id responseObject) {
+	[self.getSessionManager GET: kSearchURL parameters: params progress: nil success: ^ (NSURLSessionDataTask* task, id responseObject) {
 		if (completion) {
 			completion(responseObject[@"data"]);
 		}
@@ -179,7 +179,7 @@ static STKConstStringKey kSdkVersion = @"0.3.3";
 	NSString* funcName = @"loadStickerPackWithName";
 
 	NSString* route = [NSString stringWithFormat: @"packs/%@", packName];
-	NSDictionary* params = @{@"purchase_type" : [self purchaseType: pricePoint]};
+	NSDictionary* params = @{@"purchase_type": [self purchaseType: pricePoint]};
 
 	[self.stickerSessionManager POST: route parameters: params progress: nil success: ^ (NSURLSessionDataTask* task, id responseObject) {
 		if (success) {
@@ -213,7 +213,7 @@ static STKConstStringKey kSdkVersion = @"0.3.3";
 		if (success) {
 			success(responseObject, timeInterval, newContent);
 		}
-	}                                                    failure: ^ (NSURLSessionDataTask* task, NSError* error) {
+	}                   failure: ^ (NSURLSessionDataTask* task, NSError* error) {
 		[self sendAnErrorWithCategory: funcName p1: @"" p2: @""];
 
 		if (failure) {
@@ -288,7 +288,7 @@ static STKConstStringKey kSdkVersion = @"0.3.3";
 		if (success) {
 			success(responseObject);
 		}
-	}                failure: ^ (NSURLSessionDataTask* task, NSError* error) {
+	}                          failure: ^ (NSURLSessionDataTask* task, NSError* error) {
 		[self sendAnErrorWithCategory: funcName p1: packName p2: @""];
 
 		if (failure) {
@@ -345,8 +345,11 @@ static STKConstStringKey kSdkVersion = @"0.3.3";
 
 - (void)sendAnErrorWithCategory: (NSString*)category p1: (NSString*)p1 p2: (NSString*)p2 {
 #ifndef DEBUG
+	NSString* categoryWithoutSpaces = [category stringByReplacingOccurrencesOfString: @" " withString: @""];
+	NSString* p1WithoutSpaces = [p1 stringByReplacingOccurrencesOfString: @" " withString: @""];
+	NSString* p2WithoutSpaces = [p2 stringByReplacingOccurrencesOfString: @" " withString: @""];
 
-	NSString* route = [NSString stringWithFormat: @"pack/%@/%@", /*category, */p1, p2];
+	NSString* route = [NSString stringWithFormat: @"pack/%@/%@/%@", categoryWithoutSpaces, p1WithoutSpaces, p2WithoutSpaces];
 
 	[self.errorManager POST: route parameters: nil progress: nil success: ^ (NSURLSessionDataTask* task, id responseObject) {
 		STKLog(@"Error sent for %@", route);
@@ -373,8 +376,7 @@ static STKConstStringKey kSdkVersion = @"0.3.3";
 
 #pragma mark -
 
-- (NSString* )stickerUrl
-{
+- (NSString*)stickerUrl {
 	NSString* lang = [[NSLocale preferredLanguages] objectAtIndex: 0];
 
 	NSString* language = [[lang componentsSeparatedByString: @"-"] objectAtIndex: 0];

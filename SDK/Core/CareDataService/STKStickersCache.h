@@ -17,7 +17,7 @@ extern NSString* const kSTKPackDisabledNotification;
 
 @property (nonatomic) NSManagedObjectContext* mainContext;
 
-- (NSError*)saveStickerPacks: (NSArray*)stickerPacks;
+- (void)saveStickerPacks: (NSArray*)stickerPacks error: (NSError**)error;
 
 - (STKStickerPack*)getStickerPackWithPackName: (NSString*)packName;
 
