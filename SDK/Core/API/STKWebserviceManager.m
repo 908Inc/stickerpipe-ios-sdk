@@ -3,6 +3,8 @@
 // Copyright (c) 2016 908 Inc. All rights reserved.
 //
 
+#import <SDWebImage/SDWebImageDownloader.h>
+
 #import "STKWebserviceManager.h"
 #import "AFHTTPSessionManager.h"
 #import "STKStickersManager.h"
@@ -54,7 +56,7 @@ static STKConstStringKey kPacksURL = @"shop/my";
 static STKConstStringKey kStatisticUrl = @"statistics";
 static STKConstStringKey kSearchURL = @"search";
 static STKConstStringKey kSTKApiVersion = @"v2";
-static STKConstStringKey kSdkVersion = @"0.3.3";
+static STKConstStringKey kSdkVersion = @"0.4.4";
 
 + (instancetype)sharedInstance {
 	static STKWebserviceManager* sharedInstance = nil;
@@ -136,8 +138,17 @@ static STKConstStringKey kSdkVersion = @"0.3.3";
 }
 
 - (NSString*)localization {
-	return [[NSUserDefaults standardUserDefaults] stringForKey: kLocalizationDefaultsKey] ?:
-			[NSLocale preferredLanguages][0];
+	NSString* predefinedLocalization = [[NSUserDefaults standardUserDefaults] stringForKey: kLocalizationDefaultsKey];
+
+	if (predefinedLocalization) {
+		return predefinedLocalization;
+	} else {
+		NSString* language = [NSLocale preferredLanguages].firstObject;
+		NSDictionary* languageDic = [NSLocale componentsFromLocaleIdentifier: language];
+		NSString* languageCode = languageDic[@"kCFLocaleLanguageCodeKey"];
+
+		return languageCode;
+	}
 }
 
 - (void)searchStickersWithSearchModel: (STKSearchModel*)searchModel completion: (void (^)(NSArray* stickers))completion {

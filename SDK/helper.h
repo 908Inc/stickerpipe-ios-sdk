@@ -9,7 +9,7 @@
 #ifndef helper_h
 #define helper_h
 
-#define FRAMEWORK NO
+#define FRAMEWORK YES
 
 typedef void(^STSimpleBlock)();
 typedef void(^STBoolBlock)(BOOL flag);

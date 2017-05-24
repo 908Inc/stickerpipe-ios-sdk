@@ -42,22 +42,30 @@
 }
 
 - (void)fillWithDict: (NSDictionary*)dict {
-	self.updatedDate = [NSDate dateWithTimeIntervalSince1970: [dict[@"updated_at"] doubleValue]];
-	self.artist = dict[@"artist"];
-	self.bannerUrl = dict[@"banners"][[STKUtility scaleString]];
-	self.packName = dict[@"pack_name"];
-	self.packTitle = dict[@"title"];
-	self.pricePoint = dict[@"pricepoint"];
-	self.disabled = @(![dict[@"user_status"] isEqualToString: @"active"]);
-	self.price = dict[@"price"];
-	self.packDescription = dict[@"description"];
-	self.productID = dict[@"product_id"];
+    self.updatedDate = [NSDate dateWithTimeIntervalSince1970: [dict[@"updated_at"] doubleValue]];
+    self.artist = dict[@"artist"];
+    self.bannerUrl = dict[@"banners"][[STKUtility scaleString]];
+    self.packName = dict[@"pack_name"];
+    self.packTitle = dict[@"title"];
+    self.pricePoint = dict[@"pricepoint"];
+    self.disabled = @(![dict[@"user_status"] isEqualToString: @"active"]);
+    self.price = dict[@"price"];
+    self.packDescription = dict[@"description"];
+    self.productID = dict[@"product_id"];
+    
+    [dict[@"stickers"] enumerateObjectsUsingBlock: ^ (NSDictionary* dictionary, NSUInteger idx, BOOL* stop) {
+        STKSticker* sticker = [STKSticker stickerWithDictionary: dictionary];
+        sticker.order = @(idx);
+        
+        // fix for prior to iOS 10
+        [self addStickerObjectFixed:sticker];
+    }];
+}
 
-	[dict[@"stickers"] enumerateObjectsUsingBlock: ^ (NSDictionary* dictionary, NSUInteger idx, BOOL* stop) {
-		STKSticker* sticker = [STKSticker stickerWithDictionary: dictionary];
-		sticker.order = @(idx);
-		[self addStickersObject: sticker];
-	}];
+- (void)addStickerObjectFixed:(STKSticker *)sticker {
+    NSMutableOrderedSet* tempSet = [NSMutableOrderedSet orderedSetWithOrderedSet:self.stickers];
+    [tempSet addObject:sticker];
+    self.stickers = tempSet;
 }
 
 

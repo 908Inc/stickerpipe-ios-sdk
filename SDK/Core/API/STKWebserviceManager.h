@@ -3,11 +3,10 @@
 // Copyright (c) 2016 908 Inc. All rights reserved.
 //
 
-#import "SDWebImageDownloader.h"
-
 @class AFHTTPSessionManager;
 @class STKSearchModel;
 @class DFImageTask;
+@protocol SDWebImageOperation;
 
 @interface STKWebserviceManager : NSObject
 + (instancetype)sharedInstance;
@@ -23,34 +22,34 @@
 - (void)searchStickersWithSearchModel: (STKSearchModel*)searchModel completion: (void (^)(NSArray* stickers))completion;
 
 - (void)loadStickerPackWithName: (NSString*)packName andPricePoint: (NSString*)pricePoint
-						success: (void (^)(id))success
-						failure: (void (^)(NSError*))failure;
+                        success: (void (^)(id))success
+                        failure: (void (^)(NSError*))failure;
 
 - (void)getPacksWithSuccess: (void (^)(id response, NSTimeInterval lastModifiedDate, BOOL newContent))success
-					failure: (void (^)(NSError* error))failure;
+                    failure: (void (^)(NSError* error))failure;
 
 - (void)sendStatistics: (NSArray*)statisticsArray
-			   success: (void (^)(id response))success
-			   failure: (void (^)(NSError* error))failure;
+               success: (void (^)(id response))success
+               failure: (void (^)(NSError* error))failure;
 
 - (void)getStickerPackWithName: (NSString*)packName
-					   success: (void (^)(id response))success
-					   failure: (void (^)(NSError* error))failure;
+                       success: (void (^)(id response))success
+                       failure: (void (^)(NSError* error))failure;
 
 - (void)getStickerInfoWithId: (NSString*)contentId
-					 success: (void (^)(id response))success
-					 failure: (void (^)(NSError*))failure;
+                     success: (void (^)(id response))success
+                     failure: (void (^)(NSError*))failure;
 
 
 - (void)deleteStickerPackWithName: (NSString*)packName
-						  success: (void (^)(id))success
-						  failure: (void (^)(NSError*))failure;
+                          success: (void (^)(id))success
+                          failure: (void (^)(NSError*))failure;
 
-- (id <SDWebImageOperation>)downloadImageWithURL: (NSURL*)url completion: (SDWebImageDownloaderCompletedBlock)completion;
-- (id <SDWebImageOperation>)downloadImageWithURL: (NSURL*)url progress: (SDWebImageDownloaderProgressBlock)progressBlock completion: (SDWebImageDownloaderCompletedBlock)completion;
+- (id <SDWebImageOperation>)downloadImageWithURL: (NSURL*)url completion: (void(^)(UIImage*, NSData*, NSError*, BOOL))completion;
+- (id <SDWebImageOperation>)downloadImageWithURL: (NSURL*)url progress: (void(^)(NSInteger, NSInteger))progressBlock completion: (void(^)(UIImage*, NSData*, NSError*, BOOL))completion;
 
 - (void)sendDeviceToken: (NSString*)token
-				failure: (void (^)(NSError*))failure;
+                failure: (void (^)(NSError*))failure;
 
 - (void)sendAnErrorWithCategory: (NSString*)category p1: (NSString*)p1 p2: (NSString*)p2;
 //

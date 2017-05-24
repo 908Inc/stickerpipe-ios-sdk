@@ -8,6 +8,7 @@
 
 #import "NSPersistentStoreCoordinator+STKAdditions.h"
 #import "helper.h"
+#import "STKSticker+CoreDataClass.h"
 
 static NSPersistentStoreCoordinator* defaultCoordinator;
 
@@ -19,13 +20,7 @@ static NSPersistentStoreCoordinator* defaultCoordinator;
 		static dispatch_once_t onceToken;
 		dispatch_once(&onceToken, ^ {
 
-			NSURL* urlForDataModel = nil;
-			if (FRAMEWORK) {
-				NSString* bundlePath = [[NSBundle mainBundle] pathForResource: @"ResBundle" ofType: @"bundle"];
-				urlForDataModel = [[NSBundle bundleWithPath: bundlePath] URLForResource: @"StickerModel" withExtension: @"momd"];
-			} else {
-				urlForDataModel = [[NSBundle mainBundle] URLForResource: @"StickerModel" withExtension: @"momd"];
-			}
+			NSURL* urlForDataModel = [[NSBundle bundleForClass: STKSticker.class] URLForResource: @"StickerModel" withExtension: @"momd"];
 
 			NSManagedObjectModel* model = [[NSManagedObjectModel alloc] initWithContentsOfURL: urlForDataModel];
 
